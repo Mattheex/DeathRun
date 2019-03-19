@@ -41,7 +41,7 @@ class Map {
     }
   } // sol
   
-  void escalier(int x, int y, int n) { // (x, y, nombre de marche, truc qui permet d'avoir moins de marche
+  void escalier(int x, int y, int n) { // (x, y, nombre de marche
     int q = n;
     for (int s = 0; s < n * t_cube; s += t_cube) {
       plateforme(x + s, y - s, q);

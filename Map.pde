@@ -17,8 +17,8 @@ class Map {
     fill(120);
 
     sol(sX, sX);
-    escalier(384,656,5, 5);
-    reverseEscalier(32,656,5, 5);
+    escalier(384,656,5);
+    reverseEscalier(32,656,5);
     rect(c_flottant.x, c_flottant.y, t_cube, t_cube);
 
     image(sprites[7][button], button_r.x, button_r.y);
@@ -41,14 +41,16 @@ class Map {
     }
   } // sol
   
-  void escalier(int x, int y, int n, int q) { // (x, y, nombre de marche, truc qui permet d'avoir moins de marche
+  void escalier(int x, int y, int n) { // (x, y, nombre de marche, truc qui permet d'avoir moins de marche
+    int q = n;
     for (int s = 0; s < n * t_cube; s += t_cube) {
       plateforme(x + s, y - s, q);
       q -= 1;
     }
   } // escalier
   
-  void reverseEscalier(int x, int y, int n, int q) {
+  void reverseEscalier(int x, int y, int n) {
+    int q = n;
     for (int s = 0; s < n * t_cube; s += t_cube) {
       plateforme(x , y - s, q);
       q -= 1;

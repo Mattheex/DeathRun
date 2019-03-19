@@ -1,4 +1,5 @@
 class Perso {
+
   PVector position, start;
   int speed, previous_direct = 2, direct = 1, x2 = 0;
   boolean z = false, s = false, q = false, d = false, monte = false, saut = false, death=false;
@@ -7,6 +8,8 @@ class Perso {
   int v0 = 150;
   int direct_saut;
   float time0, time = millis();
+
+  int[] col = new int[33];
 
   Perso(int s, int g) {
     position = new PVector(10, g);
@@ -22,10 +25,10 @@ class Perso {
         timeFrame(5);
       }
 
-      if (position.y < ground) {
-        position.y += 20;
+      if (position.y < collision()) {
+        position.y += 10;
       } else {
-        position.y = ground ;
+        position.y = collision();
       }
     } else if (saut) {
       if (z && x2 == 2) {
@@ -97,7 +100,28 @@ class Perso {
       }
     }
 
+    collision();
+
     image(sprites[direct][currentFrame], position.x, position.y);
+  }
+
+  int collision() {
+    int x1 = ceil(p.position.x);
+    int x2 = ceil(p.position.x + 64);
+
+    int y1 = col[x1/32];
+    int y2 = col[x2/32];
+
+    /*if (y1 >= position.y && y2 >= position.y) {
+     
+     } else {
+     }*/
+     
+    if (y1 < y2) {
+      return y1;
+    } else {
+      return y2;
+    }
   }
 
   void timeFrame(int max) {
@@ -121,8 +145,9 @@ class Perso {
 
     if (monte) {
       position.y = start.y - (v0+speed) * t - g * t * t;
+      println(position.y);
     } else {
-      position.y = start.y - (v0+speed -30) * t - g * t * t;
+      position.y = start.y - (v0+speed-30) * t - g * t * t;
     }
 
     switch (direct_saut) {
@@ -155,8 +180,8 @@ class Perso {
       break;
     }
 
-    if (position.y > ground) {
-      position.y = ground;
+    if (position.y > collision()) {
+      position.y = collision();
       saut = false;
       x2 = 0;
       if (previous_direct == 0) {

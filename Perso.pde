@@ -1,5 +1,4 @@
 class Perso {
-
   PVector position, start;
   int speed, previous_direct = 2, direct = 1, x2 = 0;
   boolean z = false, s = false, q = false, d = false, monte = false, saut = false, death=false;
@@ -24,7 +23,7 @@ class Perso {
       }
 
       if (position.y < ground) {
-        position.y += 10;
+        position.y += 20;
       } else {
         position.y = ground ;
       }

@@ -2,19 +2,13 @@ class Trap {
 
   boolean rocket_b = false;
   int rocket_f  = 0;
-
   PVector rocket_v = new PVector(1500, 450);
-
-  boolean caisse_b = false;
-  int caisse_f = 0;
-  PVector caisse_v = new PVector(600, 100);
 
   float time = millis();
   boolean death = false;
-  int trap, currentFrame = 0, ground;
+  int trap, currentFrame = 0;
 
-  Trap(int g) {
-    ground = g;
+  Trap() {
   }
 
   void update(float xP, float yP) {
@@ -23,7 +17,7 @@ class Trap {
       if (!death) {
         death = collision(xP, yP, 64, 64, rocket_v.x, rocket_v.y, 64, 32);
       }
-
+      
       if (rocket_v.x >= -64) {
         rocket(true);
         image(sprites[4][rocket_f], rocket_v.x, rocket_v.y);
@@ -31,15 +25,6 @@ class Trap {
         rocket(false);
       }
     }
-    if (caisse_b) {
-      image(sprites[5][caisse_f], caisse_v .x, caisse_v.y);
-      caisse();
-      if (!death) {
-        death = collision(xP, yP, 64, 64, caisse_v.x, caisse_v.y, 64, 64);
-      }
-    }
-    
-    image(sprites[5][caisse_f], caisse_v .x, caisse_v.y);
   }
 
   void rocket(boolean loop) {
@@ -56,15 +41,6 @@ class Trap {
     } else {
       rocket_b = false;
       rocket_v.x = 1500;
-    }
-  }
-
-  void caisse() {
-    if (caisse_v.y + 64 <= ground) {
-      caisse_v.y += 10;
-    } else {
-      caisse_v.y = ground; 
-      caisse_b = false;
     }
   }
 

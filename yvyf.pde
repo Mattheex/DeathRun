@@ -6,17 +6,16 @@ PImage[] images_d = new PImage[4];
 PImage[] rocket = new PImage[4];
 PImage[] caisse = new PImage[1];
 PImage[] mort = new PImage[6];
-PImage[] button = new PImage[6];
+PImage[] button = new PImage[2];
 PImage [][] sprites = {images_l, images_r, images_j, images_d, rocket, caisse, mort, button};
 Perso p = new Perso(speed, ground);
-Trap t = new Trap(ground);
+Trap t = new Trap();
 Map m = new Map(1056, 720);
 
 int bouton;
 
 void setup() {
   size(1056, 720);
-  frameRate(60);
   for (int k = 0; k < 8; k++) {
     sprites[0][k] = loadImage("data/perso/left/left" + k + ".png");
   }
@@ -36,13 +35,13 @@ void setup() {
   for (int k = 0; k < 6; k++) {
     sprites[6][k] = loadImage("data/perso/mort/mort" + k + ".png");
   }
-  for (int k = 0; k < 6; k++) {
+  for (int k = 0; k < 2; k++) {
     sprites[7][k] = loadImage("data/piege/button/button" + k + ".png");
   }
 }
 
 void draw() {
-  background(252,255,254);
+  background(255);
 
   m.update();
   p.update();
@@ -75,17 +74,8 @@ void keyReleased() {
 }
 
 void mouseClicked() {
-  if (mouseX >= m.button_r_v.x && mouseX <= m.button_r_v.x+m.t_cube && mouseY >= m.button_r_v.y && mouseY <= m.button_r_v.y+32) {
+  if (mouseX >= m.c_flottant.x && mouseX <= m.c_flottant.x+m.t_cube && mouseY >= m.c_flottant.y && mouseY <= m.c_flottant.y+32) {
     t.rocket_b = true;
-    m.button_r += 1;
+    m.button = 1;
   }
-  if (mouseX >= m.button_b_v.x && mouseX <= m.button_b_v.x+m.t_cube && mouseY >= m.button_b_v.y && mouseY <= m.button_b_v.y+32) {
-    t.caisse_b = true;
-    m.button_b += 1;
-  }
-}
-
-void mouseReleased() {
-  m.button_r = 2;
-  m.button_b = 0;
 }

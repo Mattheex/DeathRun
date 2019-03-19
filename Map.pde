@@ -11,17 +11,12 @@ class Map {
   int button_b = 0;
 
   int i;
-
-  /*ArrayList<Integer> abscisse = new ArrayList<Integer>();
-   ArrayList<Integer> col = new ArrayList<Integer>();
-   int ab_now = -2;*/
-
   int[] col = new int[33];
 
   Map(int x, int y) {
     sX = x;
     sY = y;
-    for (int i = 0; i < col.length; i++) {
+    for (i = 0; i < col.length; i++) {
       col[i] = sY + 64;
     }
   }
@@ -30,9 +25,10 @@ class Map {
     noStroke();
     fill(8, 7, 7);
     
+    plafond();
     sol(150, 300);
-    escalier(384, 656, 5);
-    reverseEscalier(384+5*32, 656, 5);
+    escalier(384, 656, 7);
+    reverseEscalier(384+7*32, 656, 7);
 
     rect(c_flottant.x, c_flottant.y, t_cube, t_cube);
     image(sprites[7][button_r], button_r_v.x, button_r_v.y);
@@ -42,7 +38,7 @@ class Map {
   }
 
   void plafond() { // Dessine un plafond
-    rect(0, 0, 1056, 32);
+    rect(0, 0, 1056, 64);
   }
 
   void plateforme(int x, int y, int n) { // Créé des plateformes

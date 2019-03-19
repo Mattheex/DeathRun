@@ -1,15 +1,19 @@
 class Perso {
 
   PVector position, start;
-  int speed, previous_direct = 2, direct = 1, x2 = 0;
-  boolean z = false, s = false, q = false, d = false, monte = false, saut = false, death=false;
+  int speed, previous_direct = 2, direct = 1, s2 = 0;
+  boolean z = false, s = false, q = false, d = false, monte = false, saut = false, death=false, impulsion = false;
+  ;
   int currentFrame = 0;
   float g = -350, t;
   int v0 = 150;
   int direct_saut;
   float time0, time = millis();
+  boolean l_col = false, r_col = false;
+  int ground;
 
   int[] col = new int[33];
+  int x1,x2,y1,y2;
 
   Perso(int s, int g) {
     position = new PVector(10, g);
@@ -17,7 +21,9 @@ class Perso {
   }
 
   void update() {
-    if (death) {
+    collision();
+
+    if (death) { // DEATH
       if (direct!= 6) {
         direct = 6;
         currentFrame = 1;
@@ -25,22 +31,23 @@ class Perso {
         timeFrame(5);
       }
 
-      if (position.y < collision()) {
+      if (position.y < ground) {
         position.y += 10;
       } else {
-        position.y = collision();
+        position.y = ground;
       }
-    } else if (saut) {
-      if (z && x2 == 2) {
+    } else if (saut) { // JUMP
+      if (z && s2 == 2) {
         time0 = millis();
         start = position;
-        x2 = 3;
+        impulsion = true;
+        s2 = 3;
       } else if (z) {
         monte = true;
       } else {
         monte = false;
-        if (x2 != 3) {
-          x2 = 2;
+        if (s2 != 3) {
+          s2 = 2;
         }
       }
 
@@ -59,10 +66,11 @@ class Perso {
       }
 
       jump();
-    } else {
+    } else { // NORMAL
       if (z) {
         time0 = millis();
         saut = true;
+        impulsion = true;
         start = position;
         previous_direct = 2;
         if (direct == 0) {
@@ -71,15 +79,15 @@ class Perso {
           currentFrame = 0;
         }
         direct = 2;
-        x2 = 1;
-      } else  if (q) { // left
+        s2 = 1;
+      } else  if (q && !l_col) { // left
         left();
         if (direct != 0) {
           currentFrame = 0;
           direct = 0;
         }
         timeFrame(7);
-      } else if (d) { // right
+      } else if (d && !r_col) { // right
         right();
         if (direct != 1) {
           currentFrame = 0;
@@ -100,27 +108,71 @@ class Perso {
       }
     }
 
-    collision();
+
 
     image(sprites[direct][currentFrame], position.x, position.y);
   }
 
-  int collision() {
-    int x1 = ceil(p.position.x);
-    int x2 = ceil(p.position.x + 64);
+  void collision() {
+    x1 = ceil(p.position.x + 16);
+    x2 = ceil(p.position.x + 48);
 
-    int y1 = col[x1/32];
-    int y2 = col[x2/32];
-
-    /*if (y1 >= position.y && y2 >= position.y) {
-     
-     } else {
-     }*/
-     
-    if (y1 < y2) {
-      return y1;
+    if (x1 < 0 || x1 >= 1056) {
+      if (x1 < 0) {
+        p.position.x = -17;
+      }
+      y1 = col[0];
+      l_col = true;
     } else {
-      return y2;
+      y1 = col[x1/32];
+      if (y1 < position.y) {
+        l_col = true;
+      } else {
+        l_col = false;
+      }
+    }
+
+    if (x2 < 0 || x2 >= 1056) {
+      if (x2 >= 1056) {
+        p.position.x = 1008;
+      }
+      y2 = col[32];
+      r_col = true;
+    } else {
+      y2 = col[x2/32];
+      if (y2 < position.y) {
+        r_col = true;
+      } else {
+        r_col = false;
+      }
+    }
+
+    if (y1 < y2) {
+      ground = y1;
+    } else if (y2 < y1) {
+      ground = y2;
+    } else {
+      ground = y1;
+    }
+    
+    if (position.y < 64) {
+      impulsion = false;
+    }
+
+    if (!saut && ground > position.y) {
+      println("Descente");
+      time0 = millis();
+      saut = true;
+      impulsion = false;
+      start = position;
+      previous_direct = 2;
+      if (direct == 0) {
+        currentFrame = 2;
+      } else {
+        currentFrame = 0;
+      }
+      direct = 2;
+      s2 = 1;
     }
   }
 
@@ -138,17 +190,23 @@ class Perso {
   void jump() {
     t = (millis() - time0)/1000;
 
-    if (t > 0.1 && x2 == 0) {
+    if (t > 0.1 && s2 == 0) {
       currentFrame = 1;
-      x2 = 1;
+      s2 = 1;
     }
 
-    if (monte) {
-      position.y = start.y - (v0+speed) * t - g * t * t;
-      println(position.y);
+    if (impulsion) {
+      if (monte) {
+        position.y = start.y - (v0+speed) * t - g * t * t;
+        println(position.y);
+      } else {
+        position.y = start.y - (v0+speed-30) * t - g * t * t;
+      }
     } else {
-      position.y = start.y - (v0+speed-30) * t - g * t * t;
+      position.y = start.y - speed * t - g * t * t;
     }
+
+
 
     switch (direct_saut) {
     case 0:
@@ -180,10 +238,10 @@ class Perso {
       break;
     }
 
-    if (position.y > collision()) {
-      position.y = collision();
+    if (position.y > ground) {
+      position.y = ground;
       saut = false;
-      x2 = 0;
+      s2 = 0;
       if (previous_direct == 0) {
         direct = 0;
       } else {
